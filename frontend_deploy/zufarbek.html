@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sertifikat Pro — Admin panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F7FBF8; --paper-alt:#FFFFFF;
+    --ink:#142621; --muted:#5C7268;
+    --green:#1F7A4D; --green-deep:#145C39; --green-tint:#E3F3EA; --green-line:#CFE9DB;
+    --line:#E1E9E4;
+    --coral:#C4453F; --coral-tint:#FBEAE9;
+    --amber:#B0770D; --amber-tint:#FBF1DE;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:'Manrope',sans-serif;letter-spacing:-0.01em;margin:0;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit;}
+  button{font-family:'Inter',sans-serif;cursor:pointer;}
+
+  header.topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 32px;background:var(--paper-alt);border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex;align-items:center;gap:11px;font-family:'Manrope',sans-serif;font-weight:800;font-size:1.05rem;}
+  .brand-mark{
+    width:34px;height:34px;border-radius:10px;background:var(--green);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.05rem;flex-shrink:0;
+  }
+  .brand-sub{color:var(--muted);font-weight:500;font-size:0.82rem;margin-left:2px;}
+  #logoutBtn{
+    display:none;background:none;border:1px solid var(--line);color:var(--muted);
+    font-size:0.82rem;font-weight:600;padding:8px 16px;border-radius:99px;
+  }
+  #logoutBtn:hover{border-color:var(--coral);color:var(--coral);}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:44px 32px 80px;}
+
+  /* ===== Login ===== */
+  #loginCard{display:none;max-width:400px;margin:64px auto 0;}
+  .login-eyebrow{
+    display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;
+    font-size:0.72rem;letter-spacing:0.08em;color:var(--green-deep);background:var(--green-tint);
+    padding:5px 12px;border-radius:99px;margin-bottom:18px;
+  }
+  .login-eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);}
+  #loginCard h2{font-size:1.5rem;font-weight:800;margin-bottom:6px;}
+  #loginCard p.hint{color:var(--muted);font-size:0.9rem;margin:0 0 24px;}
+
+  label{display:flex;flex-direction:column;gap:6px;font-size:0.84rem;font-weight:600;margin-bottom:16px;}
+  input,textarea{
+    font-family:'Inter',sans-serif;font-size:0.94rem;padding:12px 14px;border-radius:10px;
+    border:1px solid var(--line);background:var(--paper);width:100%;color:var(--ink);
+  }
+  input:focus,textarea:focus{outline:none;border-color:var(--green);background:var(--paper-alt);}
+  textarea{resize:vertical;min-height:76px;}
+
+  .btn-primary{
+    background:var(--green);color:#fff;font-weight:700;font-size:0.92rem;
+    padding:13px 24px;border-radius:99px;border:none;
+  }
+  .btn-primary:hover{background:var(--green-deep);}
+  .error{color:var(--coral);font-size:0.85rem;min-height:1.1em;margin:2px 0 14px;}
+
+  /* ===== Students section ===== */
+  #studentsCard{display:none;}
+  .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:22px;flex-wrap:wrap;}
+  .section-head h2{font-size:1.5rem;font-weight:800;}
+  .section-head p{margin:6px 0 0;color:var(--muted);font-size:0.92rem;}
+  .btn-outline{
+    background:var(--paper-alt);border:1px solid var(--green-line);color:var(--green-deep);
+    font-weight:600;font-size:0.85rem;padding:9px 18px;border-radius:99px;
+  }
+  .btn-outline:hover{background:var(--green-tint);}
+  .btn-outline.active{background:var(--green);color:#fff;border-color:var(--green);}
+
+  /* ===== Search + filter row ===== */
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
+  .search-box{
+    flex:1;min-width:220px;display:flex;align-items:center;gap:8px;
+    background:var(--paper-alt);border:1px solid var(--line);border-radius:99px;padding:0 16px;
+  }
+  .search-box input{border:none;background:transparent;padding:11px 0;width:100%;}
+  .search-box input:focus{outline:none;}
+  .search-box svg{flex-shrink:0;opacity:0.5;}
+
+  .table-panel{background:var(--paper-alt);border:1px solid var(--line);border-radius:16px;overflow:hidden;}
+  table{width:100%;border-collapse:collapse;font-size:0.88rem;}
+  thead tr{background:var(--green-tint);}
+  th{
+    text-align:left;padding:13px 16px;color:var(--green-deep);font-weight:700;
+    font-size:0.74rem;letter-spacing:0.03em;text-transform:uppercase;
+  }
+  td{padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  .table-wrap{overflow-x:auto;}
+
+  .student-row{cursor:pointer;transition:background .12s ease;}
+  .student-row:hover{background:var(--green-tint);}
+  .name-cell{display:flex;align-items:center;gap:11px;}
+  .avatar-sm{
+    width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.76rem;flex-shrink:0;
+  }
+  .badge{display:inline-block;padding:3px 11px;border-radius:99px;font-size:0.74rem;font-weight:700;background:var(--green-tint);color:var(--green-deep);}
+  .badge.teacher{background:var(--amber-tint);color:var(--amber);}
+
+  .empty-note{color:var(--muted);font-size:0.9rem;padding:36px 16px;text-align:center;}
+  .load-more-wrap{text-align:center;margin-top:18px;}
+  .load-more-wrap button{display:none;}
+  .result-count{color:var(--muted);font-size:0.82rem;margin-bottom:12px;}
+
+  /* ===== Detail modal ===== */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(20,38,33,0.45);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:48px 20px;overflow-y:auto;}
+  .modal-backdrop[hidden]{display:none;}
+  .modal-card{background:var(--paper-alt);border-radius:20px;padding:34px;width:100%;max-width:760px;position:relative;}
+  .modal-close{
+    position:absolute;top:20px;right:20px;width:34px;height:34px;border-radius:50%;
+    border:1px solid var(--line);background:var(--paper);color:var(--muted);
+  }
+  .modal-close:hover{border-color:var(--coral);color:var(--coral);}
+
+  .detail-head{display:flex;align-items:center;gap:14px;padding-bottom:22px;border-bottom:1px solid var(--line);}
+  .avatar-lg{
+    width:52px;height:52px;border-radius:50%;background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.15rem;flex-shrink:0;
+  }
+  .detail-name{font-size:1.22rem;font-weight:800;}
+  .detail-meta{color:var(--muted);font-size:0.84rem;margin-top:2px;}
+
+  .detail-section{margin-top:26px;}
+  .detail-section-head{display:flex;align-items:center;gap:9px;margin-bottom:12px;}
+  .detail-section-head .dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;}
+  .detail-section-head h3{font-size:0.92rem;font-weight:700;}
+  .detail-section table{font-size:0.85rem;}
+  .detail-section th{background:transparent;color:var(--muted);text-transform:none;letter-spacing:0;font-size:0.72rem;padding:6px 10px;}
+  .detail-section td{padding:9px 10px;}
+  .attend-yes{color:var(--green-deep);font-weight:700;}
+  .attend-no{color:var(--coral);font-weight:700;}
+  .detail-loadmore{
+    background:none;border:none;color:var(--green-deep);font-weight:700;font-size:0.82rem;
+    padding:8px 0;display:none;
+  }
+  .detail-loadmore:hover{text-decoration:underline;}
+
+  .note-item{border-left:2px solid var(--green);padding:8px 0 8px 14px;margin-bottom:12px;font-size:0.9rem;}
+  .note-meta{color:var(--muted);font-size:0.76rem;margin-top:5px;}
+  .btn-add-note{
+    background:var(--green-tint);color:var(--green-deep);font-weight:700;font-size:0.86rem;
+    padding:11px 20px;border-radius:99px;border:none;
+  }
+  .btn-add-note:hover{background:var(--green-line);}
+
+  @media (max-width:640px){
+    header.topbar{padding:16px 20px;} .wrap{padding:32px 20px 60px;}
+    .section-head{flex-direction:column;align-items:flex-start;}
+    table{font-size:0.8rem;} th,td{padding:10px;}
+    .modal-card{padding:22px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">✓</span>
+    Sertifikat Pro <span class="brand-sub">— Admin</span>
+  </div>
+  <button id="logoutBtn" type="button">Chiqish</button>
+</header>
+
+<div class="wrap">
+
+  <div id="loginCard">
+    <span class="login-eyebrow">ADMIN KIRISH</span>
+    <h2>Xush kelibsiz</h2>
+    <p class="hint">O'quvchilar ma'lumotlarini ko'rish uchun tizimga kiring.</p>
+    <label>Telefon raqam <input type="tel" id="loginPhone" placeholder="+998901234567"></label>
+    <label>Parol <input type="password" id="loginPassword"></label>
+    <p class="error" id="loginError"></p>
+    <button class="btn-primary" id="loginBtn">Kirish</button>
+  </div>
+
+  <div id="studentsCard">
+    <div class="section-head">
+      <div>
+        <h2>O'quvchilar</h2>
+        <p>Bot orqali ro'yxatdan o'tgan barcha foydalanuvchilar</p>
+      </div>
+      <button class="btn-outline" id="refreshStudentsBtn">Yangilash</button>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" id="searchInput" placeholder="Ism yoki familiya bo'yicha qidirish...">
+      </div>
+      <button class="btn-outline" id="missedFilterBtn" type="button">📵 Darsga kelmaganlar</button>
+    </div>
+
+    <p class="result-count" id="resultCount"></p>
+    <p class="error" id="studentsError"></p>
+    <div class="table-panel">
+      <div class="table-wrap">
+        <table id="studentsTable" style="display:none;">
+          <thead>
+            <tr>
+              <th>F.I.Sh</th><th>Telefon</th><th>Kurs</th><th>Viloyat</th><th>Tuman</th><th>Rol</th><th>Ro'yxatdan o'tgan</th>
+            </tr>
+          </thead>
+          <tbody id="studentsBody"></tbody>
+        </table>
+        <p class="empty-note" id="studentsEmpty" style="display:none;">Hech kim topilmadi.</p>
+      </div>
+    </div>
+    <div class="load-more-wrap">
+      <button class="btn-outline" id="loadMoreStudentsBtn" type="button">Yana ko'rish</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== O'quvchi profili (modal) ===== -->
+<div class="modal-backdrop" id="detailBackdrop" hidden>
+  <div class="modal-card">
+    <button class="modal-close" id="detailClose" type="button">✕</button>
+
+    <div class="detail-head">
+      <div class="avatar-lg" id="detailAvatar">—</div>
+      <div>
+        <div class="detail-name" id="detailName">—</div>
+        <div class="detail-meta mono" id="detailMeta">—</div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-head"><span class="dot"></span><h3>Oddiy testlar natijalari</h3></div>
+      <div id="detailTests" class="table-wrap"><p class="empty-note">Yuklanmoqda...</p></div>
+      <button class="detail-loadmore" id="loadMoreTestsBtn" type="button">Yana ko'rish</button>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-head"><span class="dot"></span><h3>A+ testlar natijalari</h3></div>
+      <div id="detailAplus" class="table-wrap"><p class="empty-note">Yuklanmoqda...</p></div>
+      <button class="detail-loadmore" id="loadMoreAplusBtn" type="button">Yana ko'rish</button>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-head"><span class="dot"></span><h3>Davomat</h3></div>
+      <div id="detailAttendance" class="table-wrap"><p class="empty-note">Yuklanmoqda...</p></div>
+      <button class="detail-loadmore" id="loadMoreAttendanceBtn" type="button">Yana ko'rish</button>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-head"><span class="dot"></span><h3>Izohlar</h3></div>
+      <div id="notesList"><p class="empty-note">Yuklanmoqda...</p></div>
+      <label style="margin-top:14px;">Yangi izoh
+        <textarea id="newNote" placeholder="Bu o'quvchi haqida izoh yozing..."></textarea>
+      </label>
+      <p class="error" id="noteError"></p>
+      <button class="btn-add-note" id="addNoteBtn">Izoh qo'shish</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var API_BASE = 'https://rasvo.onrender.com';
+
+  var loginCard = document.getElementById('loginCard');
+  var studentsCard = document.getElementById('studentsCard');
+  var loginError = document.getElementById('loginError');
+  var studentsError = document.getElementById('studentsError');
+  var studentsTable = document.getElementById('studentsTable');
+  var studentsBody = document.getElementById('studentsBody');
+  var studentsEmpty = document.getElementById('studentsEmpty');
+  var resultCount = document.getElementById('resultCount');
+  var logoutBtn = document.getElementById('logoutBtn');
+  var searchInput = document.getElementById('searchInput');
+  var missedFilterBtn = document.getElementById('missedFilterBtn');
+  var loadMoreStudentsBtn = document.getElementById('loadMoreStudentsBtn');
+
+  var detailBackdrop = document.getElementById('detailBackdrop');
+  var detailClose = document.getElementById('detailClose');
+  var detailAvatar = document.getElementById('detailAvatar');
+  var detailName = document.getElementById('detailName');
+  var detailMeta = document.getElementById('detailMeta');
+  var detailTests = document.getElementById('detailTests');
+  var detailAplus = document.getElementById('detailAplus');
+  var detailAttendance = document.getElementById('detailAttendance');
+  var loadMoreTestsBtn = document.getElementById('loadMoreTestsBtn');
+  var loadMoreAplusBtn = document.getElementById('loadMoreAplusBtn');
+  var loadMoreAttendanceBtn = document.getElementById('loadMoreAttendanceBtn');
+  var notesList = document.getElementById('notesList');
+  var newNote = document.getElementById('newNote');
+  var noteError = document.getElementById('noteError');
+  var currentTelegramId = null;
+
+  // ===== students list state =====
+  var STUDENTS_PAGE_SIZE = 10;
+  var studentsOffset = 0;
+  var studentsTotal = 0;
+  var searchTimer = null;
+  var missedFilterActive = false;
+
+  // ===== detail sub-section state =====
+  var DETAIL_PAGE_SIZE = 3;
+  var testsOffset = 0, testsTotal = 0;
+  var aplusOffset = 0, aplusTotal = 0;
+  var attendanceOffset = 0, attendanceTotal = 0;
+
+  function getToken(){ return localStorage.getItem('mp_admin_token'); }
+  function saveToken(t){ localStorage.setItem('mp_admin_token', t); }
+  function authHeaders(){ return { 'Authorization': 'Bearer ' + getToken() }; }
+
+  function initials(name){
+    if(!name) return '?';
+    var parts = name.trim().split(/\s+/).slice(0,2);
+    return parts.map(function(p){ return p[0]; }).join('').toUpperCase();
+  }
+
+  function showLogin(){
+    loginCard.style.display = 'block';
+    studentsCard.style.display = 'none';
+    logoutBtn.style.display = 'none';
+  }
+  function showPanel(){
+    loginCard.style.display = 'none';
+    studentsCard.style.display = 'block';
+    logoutBtn.style.display = 'inline-block';
+    loadStudents(true);
+  }
+
+  function buildStudentsUrl(offset){
+    var params = new URLSearchParams();
+    params.set('limit', STUDENTS_PAGE_SIZE);
+    params.set('offset', offset);
+    if(searchInput.value.trim()) params.set('search', searchInput.value.trim());
+    if(missedFilterActive) params.set('missed_last_session', 'true');
+    return API_BASE + '/admin/students?' + params.toString();
+  }
+
+  function loadStudents(reset){
+    studentsError.textContent = '';
+    if(reset){ studentsOffset = 0; }
+
+    fetch(buildStudentsUrl(studentsOffset), { headers: authHeaders() })
+    .then(function(res){ return res.json().then(function(body){ return {ok: res.ok, body: body}; }); })
+    .then(function(result){
+      if(!result.ok){
+        if(result.body && result.body.detail && String(result.body.detail).includes('kirish')){
+          localStorage.removeItem('mp_admin_token'); showLogin(); return;
+        }
+        studentsError.textContent = typeof result.body.detail === 'string' ? result.body.detail : "O'quvchilarni yuklab bo'lmadi.";
+        studentsTable.style.display = 'none';
+        studentsEmpty.style.display = 'none';
+        loadMoreStudentsBtn.style.display = 'none';
+        return;
+      }
+
+      var students = result.body.items || [];
+      studentsTotal = result.body.total || 0;
+
+      if(reset) studentsBody.innerHTML = '';
+
+      if(studentsTotal === 0){
+        studentsTable.style.display = 'none';
+        studentsEmpty.style.display = 'block';
+        resultCount.textContent = '';
+        loadMoreStudentsBtn.style.display = 'none';
+        return;
+      }
+
+      studentsEmpty.style.display = 'none';
+      studentsTable.style.display = 'table';
+
+      var rowsHtml = students.map(function(s){
+        var badgeClass = s.role === 'teacher' ? 'badge teacher' : 'badge';
+        return '<tr class="student-row" data-id="' + s.telegram_id + '" data-name="' + (s.full_name || '') + '">' +
+          '<td><div class="name-cell"><span class="avatar-sm">' + initials(s.full_name) + '</span>' + (s.full_name || '') + '</div></td>' +
+          '<td class="mono">' + (s.phone || '') + '</td>' +
+          '<td>' + (s.course || '') + '</td>' +
+          '<td>' + (s.region || '') + '</td>' +
+          '<td>' + (s.district || '') + '</td>' +
+          '<td><span class="' + badgeClass + '">' + (s.role || '') + '</span></td>' +
+          '<td class="mono">' + (s.registered_at || '') + '</td>' +
+        '</tr>';
+      }).join('');
+      studentsBody.insertAdjacentHTML('beforeend', rowsHtml);
+
+      studentsOffset += students.length;
+      resultCount.textContent = studentsOffset + ' / ' + studentsTotal + ' ko\'rsatildi';
+      loadMoreStudentsBtn.style.display = (studentsOffset < studentsTotal) ? 'inline-block' : 'none';
+
+      studentsBody.querySelectorAll('.student-row').forEach(function(row){
+        row.onclick = function(){ openDetail(row.dataset.id, row.dataset.name); };
+      });
+    })
+    .catch(function(){ studentsError.textContent = "Serverga ulanib bo'lmadi."; });
+  }
+
+  searchInput.addEventListener('input', function(){
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(function(){ loadStudents(true); }, 400);
+  });
+
+  missedFilterBtn.addEventListener('click', function(){
+    missedFilterActive = !missedFilterActive;
+    missedFilterBtn.classList.toggle('active', missedFilterActive);
+    loadStudents(true);
+  });
+
+  loadMoreStudentsBtn.addEventListener('click', function(){ loadStudents(false); });
+  document.getElementById('refreshStudentsBtn').addEventListener('click', function(){ loadStudents(true); });
+
+  function fmtDate(s){ return s || '—'; }
+
+  function renderDetailTable(container, rows, columns, append){
+    if(!rows.length && !append){ container.innerHTML = '<p class="empty-note">Ma\'lumot yo\'q.</p>'; return; }
+    if(!rows.length) return;
+
+    var tbody = rows.map(function(r){
+      return '<tr>' + columns.map(function(c){ return '<td>' + c.render(r) + '</td>'; }).join('') + '</tr>';
+    }).join('');
+
+    if(append){
+      var existingTbody = container.querySelector('tbody');
+      if(existingTbody){ existingTbody.insertAdjacentHTML('beforeend', tbody); return; }
+    }
+    var thead = '<tr>' + columns.map(function(c){ return '<th>' + c.label + '</th>'; }).join('') + '</tr>';
+    container.innerHTML = '<table><thead>' + thead + '</thead><tbody>' + tbody + '</tbody></table>';
+  }
+
+  function loadDetailSection(kind, telegramId, reset){
+    var endpoint, container, btn, offsetGetSet, columns;
+
+    if(kind === 'tests'){
+      endpoint = '/tests'; container = detailTests; btn = loadMoreTestsBtn;
+      if(reset) testsOffset = 0;
+      columns = [
+        {label:'Test', render:function(r){ return r.test_name || '—'; }},
+        {label:'Ball', render:function(r){ return r.score + ' / ' + r.total_questions; }},
+        {label:'Sana', render:function(r){ return fmtDate(r.submitted_at); }}
+      ];
+    } else if(kind === 'aplus'){
+      endpoint = '/aplus'; container = detailAplus; btn = loadMoreAplusBtn;
+      if(reset) aplusOffset = 0;
+      columns = [
+        {label:'Test', render:function(r){ return r.test_name || '—'; }},
+        {label:'Ball', render:function(r){ return r.score + ' / ' + r.question_count; }},
+        {label:'Sana', render:function(r){ return fmtDate(r.submitted_at); }}
+      ];
+    } else {
+      endpoint = '/attendance'; container = detailAttendance; btn = loadMoreAttendanceBtn;
+      if(reset) attendanceOffset = 0;
+      columns = [
+        {label:'Sessiya sanasi', render:function(r){ return fmtDate(r.created_at); }},
+        {label:'Kod', render:function(r){ return r.code || '—'; }},
+        {label:'Holat', render:function(r){ return r.attended ? '<span class="attend-yes">Qatnashdi</span>' : '<span class="attend-no">Qatnashmadi</span>'; }}
+      ];
+    }
+
+    var offset = kind === 'tests' ? testsOffset : (kind === 'aplus' ? aplusOffset : attendanceOffset);
+
+    if(reset){ container.innerHTML = '<p class="empty-note">Yuklanmoqda...</p>'; btn.style.display = 'none'; }
+
+    fetch(API_BASE + '/admin/students/' + telegramId + endpoint + '?limit=' + DETAIL_PAGE_SIZE + '&offset=' + offset, { headers: authHeaders() })
+    .then(function(res){ return res.json(); })
+    .then(function(data){
+      var items = data.items || [];
+      var total = data.total || 0;
+      renderDetailTable(container, items, columns, !reset);
+
+      var newOffset = offset + items.length;
+      if(kind === 'tests'){ testsOffset = newOffset; testsTotal = total; }
+      else if(kind === 'aplus'){ aplusOffset = newOffset; aplusTotal = total; }
+      else { attendanceOffset = newOffset; attendanceTotal = total; }
+
+      btn.style.display = (newOffset < total) ? 'inline-block' : 'none';
+    })
+    .catch(function(){
+      container.innerHTML = '<p class="empty-note">Yuklab bo\'lmadi.</p>';
+    });
+  }
+
+  loadMoreTestsBtn.addEventListener('click', function(){ loadDetailSection('tests', currentTelegramId, false); });
+  loadMoreAplusBtn.addEventListener('click', function(){ loadDetailSection('aplus', currentTelegramId, false); });
+  loadMoreAttendanceBtn.addEventListener('click', function(){ loadDetailSection('attendance', currentTelegramId, false); });
+
+  function openDetail(telegramId, fullName){
+    currentTelegramId = telegramId;
+    detailAvatar.textContent = initials(fullName);
+    detailName.textContent = fullName || ('ID: ' + telegramId);
+    detailMeta.textContent = 'Telegram ID: ' + telegramId;
+    newNote.value = '';
+    noteError.textContent = '';
+    detailBackdrop.hidden = false;
+
+    loadDetailSection('tests', telegramId, true);
+    loadDetailSection('aplus', telegramId, true);
+    loadDetailSection('attendance', telegramId, true);
+    loadNotes(telegramId);
+  }
+
+  function loadNotes(telegramId){
+    notesList.innerHTML = '<p class="empty-note">Yuklanmoqda...</p>';
+    fetch(API_BASE + '/admin/students/' + telegramId + '/notes', { headers: authHeaders() })
+    .then(function(res){ return res.json(); })
+    .then(function(notes){
+      if(!notes.length){ notesList.innerHTML = '<p class="empty-note">Hozircha izoh yo\'q.</p>'; return; }
+      notesList.innerHTML = notes.map(function(n){
+        return '<div class="note-item">' + n.note +
+          '<div class="note-meta">' + n.author_name + ' · ' + n.created_at + '</div></div>';
+      }).join('');
+    })
+    .catch(function(){ notesList.innerHTML = '<p class="empty-note">Yuklab bo\'lmadi.</p>'; });
+  }
+
+  document.getElementById('addNoteBtn').addEventListener('click', function(){
+    noteError.textContent = '';
+    var text = newNote.value.trim();
+    if(!text){ noteError.textContent = "Izoh bo'sh bo'lmasin."; return; }
+
+    fetch(API_BASE + '/admin/students/' + currentTelegramId + '/notes', {
+      method: 'POST',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
+      body: JSON.stringify({ note: text })
+    })
+    .then(function(res){ return res.json().then(function(body){ return {ok:res.ok, body:body}; }); })
+    .then(function(result){
+      if(!result.ok){
+        noteError.textContent = typeof result.body.detail === 'string' ? result.body.detail : 'Xatolik yuz berdi.';
+        return;
+      }
+      newNote.value = '';
+      loadNotes(currentTelegramId);
+    })
+    .catch(function(){ noteError.textContent = "Serverga ulanib bo'lmadi."; });
+  });
+
+  detailClose.addEventListener('click', function(){ detailBackdrop.hidden = true; });
+  detailBackdrop.addEventListener('click', function(e){ if(e.target === detailBackdrop) detailBackdrop.hidden = true; });
+
+  logoutBtn.addEventListener('click', function(){
+    localStorage.removeItem('mp_admin_token');
+    showLogin();
+  });
+
+  document.getElementById('loginBtn').addEventListener('click', function(){
+    loginError.textContent = '';
+    var phone = document.getElementById('loginPhone').value.trim();
+    var password = document.getElementById('loginPassword').value;
+
+    fetch(API_BASE + '/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: phone, password: password })
+    })
+    .then(function(res){ return res.json().then(function(body){ return {ok:res.ok, body:body}; }); })
+    .then(function(result){
+      if(!result.ok){ loginError.textContent = result.body.detail || 'Xatolik'; return; }
+      saveToken(result.body.access_token);
+      fetch(API_BASE + '/admin/students?limit=1', { headers: authHeaders() })
+        .then(function(res2){
+          if(res2.ok){ showPanel(); }
+          else { loginError.textContent = 'Bu hisob admin emas.'; localStorage.removeItem('mp_admin_token'); }
+        });
+    })
+    .catch(function(){ loginError.textContent = "Serverga ulanib bo'lmadi."; });
+  });
+
+  if(getToken()){ showPanel(); } else { showLogin(); }
+})();
+</script>
+</body>
+</html>
