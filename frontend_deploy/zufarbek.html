@@ -202,6 +202,7 @@
         <input type="text" id="searchInput" placeholder="Ism yoki familiya bo'yicha qidirish...">
       </div>
       <button class="btn-outline" id="missedFilterBtn" type="button">📵 Darsga kelmaganlar</button>
+      <button class="btn-outline" id="noHomeworkBtn" type="button">📝 Uyga vazifa bajarmaganlar (birinchi)</button>
     </div>
 
     <p class="result-count" id="resultCount"></p>
@@ -211,7 +212,7 @@
         <table id="studentsTable" style="display:none;">
           <thead>
             <tr>
-              <th>F.I.Sh</th><th>Telefon</th><th>Kurs</th><th>Viloyat</th><th>Tuman</th><th>Rol</th><th>Ro'yxatdan o'tgan</th>
+              <th>F.I.Sh</th><th>Telefon</th><th>Kurs</th><th>Viloyat</th><th>Tuman</th><th>Vazifa</th><th>Rol</th><th>Ro'yxatdan o'tgan</th>
             </tr>
           </thead>
           <tbody id="studentsBody"></tbody>
@@ -284,6 +285,7 @@
   var logoutBtn = document.getElementById('logoutBtn');
   var searchInput = document.getElementById('searchInput');
   var missedFilterBtn = document.getElementById('missedFilterBtn');
+  var noHomeworkBtn = document.getElementById('noHomeworkBtn');
   var loadMoreStudentsBtn = document.getElementById('loadMoreStudentsBtn');
 
   var detailBackdrop = document.getElementById('detailBackdrop');
@@ -308,6 +310,7 @@
   var studentsTotal = 0;
   var searchTimer = null;
   var missedFilterActive = false;
+  var noHomeworkActive = false;
 
   // ===== detail sub-section state =====
   var DETAIL_PAGE_SIZE = 3;
@@ -343,7 +346,17 @@
     params.set('offset', offset);
     if(searchInput.value.trim()) params.set('search', searchInput.value.trim());
     if(missedFilterActive) params.set('missed_last_session', 'true');
+    // Hech qanday test ishlamaganlar ro'yxat boshida (eng ko'p o'tkazib yuborganlar birinchi)
+    if(noHomeworkActive){ params.set('no_homework', 'true'); params.set('sort', 'homework_missed_desc'); }
     return API_BASE + '/admin/students?' + params.toString();
+  }
+
+  // Backend `tests_done` (ishlangan testlar soni) qaytarsa — 0 bo'lganlar qizil belgi bilan ko'rsatiladi
+  function homeworkCell(s){
+    if(s.tests_done === undefined || s.tests_done === null) return '';
+    return s.tests_done === 0
+      ? '<span class="attend-no">Ishlamagan</span>'
+      : '<span class="attend-yes">' + s.tests_done + ' ta</span>';
   }
 
   function loadStudents(reset){
@@ -388,6 +401,7 @@
           '<td>' + (s.course || '') + '</td>' +
           '<td>' + (s.region || '') + '</td>' +
           '<td>' + (s.district || '') + '</td>' +
+          '<td>' + homeworkCell(s) + '</td>' +
           '<td><span class="' + badgeClass + '">' + (s.role || '') + '</span></td>' +
           '<td class="mono">' + (s.registered_at || '') + '</td>' +
         '</tr>';
@@ -413,6 +427,12 @@
   missedFilterBtn.addEventListener('click', function(){
     missedFilterActive = !missedFilterActive;
     missedFilterBtn.classList.toggle('active', missedFilterActive);
+    loadStudents(true);
+  });
+
+  noHomeworkBtn.addEventListener('click', function(){
+    noHomeworkActive = !noHomeworkActive;
+    noHomeworkBtn.classList.toggle('active', noHomeworkActive);
     loadStudents(true);
   });
 
