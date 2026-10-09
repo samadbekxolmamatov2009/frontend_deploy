@@ -202,8 +202,7 @@
         <input type="text" id="searchInput" placeholder="Ism yoki familiya bo'yicha qidirish...">
       </div>
       <button class="btn-outline" id="missedFilterBtn" type="button">📵 Darsga kelmaganlar</button>
-      <button class="btn-outline" id="noHomeworkBtn" type="button">📝 Uyga vazifa bajarmaganlar (birinchi)</button>
-      <button class="btn-outline" id="oldestFirstBtn" type="button">⏪ Eski ro'yxatdan o'tganlar birinchi</button>
+      <button class="btn-outline" id="noHomeworkBtn" type="button">🚨 Eng yomonlar birinchi</button>
     </div>
 
     <p class="result-count" id="resultCount"></p>
@@ -213,7 +212,7 @@
         <table id="studentsTable" style="display:none;">
           <thead>
             <tr>
-              <th>F.I.Sh</th><th>Telefon</th><th>Kurs</th><th>Viloyat</th><th>Tuman</th><th>Vazifa</th><th>Rol</th><th>Ro'yxatdan o'tgan</th>
+              <th>F.I.Sh</th><th>Telefon</th><th>Kurs</th><th>Viloyat</th><th>Tuman</th><th>Vazifa</th><th>Davomat</th><th>Rol</th><th>Ro'yxatdan o'tganiga</th>
             </tr>
           </thead>
           <tbody id="studentsBody"></tbody>
@@ -287,7 +286,6 @@
   var searchInput = document.getElementById('searchInput');
   var missedFilterBtn = document.getElementById('missedFilterBtn');
   var noHomeworkBtn = document.getElementById('noHomeworkBtn');
-  var oldestFirstBtn = document.getElementById('oldestFirstBtn');
   var loadMoreStudentsBtn = document.getElementById('loadMoreStudentsBtn');
 
   var detailBackdrop = document.getElementById('detailBackdrop');
@@ -313,7 +311,6 @@
   var searchTimer = null;
   var missedFilterActive = false;
   var noHomeworkActive = false;
-  var oldestFirstActive = false;
 
   // ===== detail sub-section state =====
   var DETAIL_PAGE_SIZE = 3;
@@ -350,17 +347,22 @@
     if(searchInput.value.trim()) params.set('search', searchInput.value.trim());
     if(missedFilterActive) params.set('missed_last_session', 'true');
     // Hech qanday test ishlamaganlar ro'yxat boshida (eng ko'p o'tkazib yuborganlar birinchi)
-    if(noHomeworkActive){ params.set('sort', 'homework_missed_desc'); }
-    if(oldestFirstActive) params.set('oldest_first', 'true');
+    if(noHomeworkActive){ params.set('sort', 'worst_first'); }
     return API_BASE + '/admin/students?' + params.toString();
   }
 
-  // Backend `tests_done` (ishlangan testlar soni) qaytarsa — 0 bo'lganlar qizil belgi bilan ko'rsatiladi
-  function homeworkCell(s){
-    if(s.tests_done === undefined || s.tests_done === null) return '';
-    return s.tests_done === 0
-      ? '<span class="attend-no">Ishlamagan</span>'
-      : '<span class="attend-yes">' + s.tests_done + ' ta</span>';
+  // "bajargan / ro'yxatdan o'tgandan keyin berilgan jami"; hech narsa qilmagan bo'lsa qizil
+  function ratioCell(done, total){
+    if(done === undefined || done === null) return '';
+    if(!total) return '<span class="mono">' + done + ' / 0</span>';
+    return done === 0
+      ? '<span class="attend-no">' + done + ' / ' + total + '</span>'
+      : '<span class="attend-yes">' + done + ' / ' + total + '</span>';
+  }
+
+  function daysCell(s){
+    if(s.days_registered === undefined || s.days_registered === null) return s.registered_at || '';
+    return s.days_registered + ' kun';
   }
 
   function loadStudents(reset){
@@ -405,9 +407,10 @@
           '<td>' + (s.course || '') + '</td>' +
           '<td>' + (s.region || '') + '</td>' +
           '<td>' + (s.district || '') + '</td>' +
-          '<td>' + homeworkCell(s) + '</td>' +
+          '<td>' + ratioCell(s.tests_done, s.tests_total) + '</td>' +
+          '<td>' + ratioCell(s.attendance_attended, s.attendance_total) + '</td>' +
           '<td><span class="' + badgeClass + '">' + (s.role || '') + '</span></td>' +
-          '<td class="mono">' + (s.registered_at || '') + '</td>' +
+          '<td class="mono" title="' + (s.registered_at || '') + '">' + daysCell(s) + '</td>' +
         '</tr>';
       }).join('');
       studentsBody.insertAdjacentHTML('beforeend', rowsHtml);
@@ -431,12 +434,6 @@
   missedFilterBtn.addEventListener('click', function(){
     missedFilterActive = !missedFilterActive;
     missedFilterBtn.classList.toggle('active', missedFilterActive);
-    loadStudents(true);
-  });
-
-  oldestFirstBtn.addEventListener('click', function(){
-    oldestFirstActive = !oldestFirstActive;
-    oldestFirstBtn.classList.toggle('active', oldestFirstActive);
     loadStudents(true);
   });
 
