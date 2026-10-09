@@ -203,6 +203,7 @@
       </div>
       <button class="btn-outline" id="missedFilterBtn" type="button">📵 Darsga kelmaganlar</button>
       <button class="btn-outline" id="noHomeworkBtn" type="button">📝 Uyga vazifa bajarmaganlar (birinchi)</button>
+      <button class="btn-outline" id="oldestFirstBtn" type="button">⏪ Eski ro'yxatdan o'tganlar birinchi</button>
     </div>
 
     <p class="result-count" id="resultCount"></p>
@@ -286,6 +287,7 @@
   var searchInput = document.getElementById('searchInput');
   var missedFilterBtn = document.getElementById('missedFilterBtn');
   var noHomeworkBtn = document.getElementById('noHomeworkBtn');
+  var oldestFirstBtn = document.getElementById('oldestFirstBtn');
   var loadMoreStudentsBtn = document.getElementById('loadMoreStudentsBtn');
 
   var detailBackdrop = document.getElementById('detailBackdrop');
@@ -311,6 +313,7 @@
   var searchTimer = null;
   var missedFilterActive = false;
   var noHomeworkActive = false;
+  var oldestFirstActive = false;
 
   // ===== detail sub-section state =====
   var DETAIL_PAGE_SIZE = 3;
@@ -347,7 +350,8 @@
     if(searchInput.value.trim()) params.set('search', searchInput.value.trim());
     if(missedFilterActive) params.set('missed_last_session', 'true');
     // Hech qanday test ishlamaganlar ro'yxat boshida (eng ko'p o'tkazib yuborganlar birinchi)
-    if(noHomeworkActive){ params.set('no_homework', 'true'); params.set('sort', 'homework_missed_desc'); }
+    if(noHomeworkActive){ params.set('sort', 'homework_missed_desc'); }
+    if(oldestFirstActive) params.set('oldest_first', 'true');
     return API_BASE + '/admin/students?' + params.toString();
   }
 
@@ -427,6 +431,12 @@
   missedFilterBtn.addEventListener('click', function(){
     missedFilterActive = !missedFilterActive;
     missedFilterBtn.classList.toggle('active', missedFilterActive);
+    loadStudents(true);
+  });
+
+  oldestFirstBtn.addEventListener('click', function(){
+    oldestFirstActive = !oldestFirstActive;
+    oldestFirstBtn.classList.toggle('active', oldestFirstActive);
     loadStudents(true);
   });
 
