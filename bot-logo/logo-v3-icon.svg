@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="640" height="640">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7c3aed"/><stop offset=".55" stop-color="#4f46e5"/><stop offset="1" stop-color="#06b6d4"/>
+    </linearGradient>
+    <radialGradient id="hi" cx="25%" cy="15%" r="70%"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="sh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e0e7ff"/></linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#1e1b4b" flood-opacity=".45"/>
+    </filter>
+  </defs>
+  <rect width="640" height="640" fill="url(#bg)"/>
+  <rect width="640" height="640" fill="url(#hi)"/>
+  <!-- decorative rings -->
+  <circle cx="320" cy="300" r="250" fill="none" stroke="#fff" stroke-opacity=".10" stroke-width="2"/>
+  <circle cx="320" cy="300" r="200" fill="none" stroke="#fff" stroke-opacity=".12" stroke-width="2"/>
+
+  <!-- shield -->
+  <g filter="url(#shadow)">
+    <path d="M320 92 L486 152 V300 C486 400 414 468 320 510 C226 468 154 400 154 300 V152 Z" fill="url(#sh)"/>
+  </g>
+  <!-- inner gradient plate -->
+  <path d="M320 128 L452 176 V298 C452 376 396 432 320 468 C244 432 188 376 188 298 V176 Z" fill="url(#bg)"/>
+
+  <!-- bold APK -->
+  <text x="320" y="318" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="104" font-weight="900" letter-spacing="2" fill="#ffffff">APK</text>
+
+  <!-- check badge -->
+  <circle cx="320" cy="392" r="38" fill="#22c55e" stroke="#fff" stroke-width="7"/>
+  <path d="M302 392 l13 14 l26 -30" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <text x="320" y="582" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="40" font-weight="800" letter-spacing="8" fill="#ffffff">SCANNER</text>
+</svg>

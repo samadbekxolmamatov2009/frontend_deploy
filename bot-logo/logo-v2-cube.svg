@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="640" height="640">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#070b18"/><stop offset="1" stop-color="#142046"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="46%" r="50%">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity=".40"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="top" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a5f3fc"/><stop offset="1" stop-color="#22d3ee"/></linearGradient>
+    <linearGradient id="left" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0e7490"/><stop offset="1" stop-color="#083344"/></linearGradient>
+    <linearGradient id="right" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#06b6d4"/><stop offset="1" stop-color="#0e7490"/></linearGradient>
+    <linearGradient id="beam" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#34d399" stop-opacity="0"/><stop offset=".5" stop-color="#6ee7b7"/><stop offset="1" stop-color="#34d399" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="blur" x="-20%" y="-300%" width="140%" height="700%"><feGaussianBlur stdDeviation="7"/></filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#ffffff" stroke-opacity=".05" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="640" height="640" fill="url(#bg)"/>
+  <rect width="640" height="640" fill="url(#grid)"/>
+  <circle cx="320" cy="300" r="270" fill="url(#glow)"/>
+
+  <!-- scan frame corners -->
+  <g fill="none" stroke="#67e8f9" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M118 190V128a10 10 0 0 1 10-10h62"/>
+    <path d="M522 190V128a10 10 0 0 0-10-10h-62"/>
+    <path d="M118 410v62a10 10 0 0 0 10 10h62"/>
+    <path d="M522 410v62a10 10 0 0 1-10 10h-62"/>
+  </g>
+
+  <!-- cube (package) -->
+  <g transform="translate(0,-8)">
+    <polygon points="320,382 195,310 195,176 320,248" fill="url(#left)"/>
+    <polygon points="320,382 445,310 445,176 320,248" fill="url(#right)"/>
+    <polygon points="320,104 445,176 320,248 195,176" fill="url(#top)"/>
+    <!-- tape on top -->
+    <polygon points="320,104 340,115.5 215,187.5 195,176" fill="#ffffff" fill-opacity=".0"/>
+    <polygon points="307.5,111.2 332.5,125.6 332.5,260 307.5,245.6" fill="#ffffff" fill-opacity=".22" transform="translate(0,0)"/>
+    <g stroke="#ffffff" stroke-opacity=".55" stroke-width="2" stroke-linejoin="round" fill="none">
+      <polygon points="320,382 195,310 195,176 320,104 445,176 445,310"/>
+      <polyline points="195,176 320,248 445,176"/><line x1="320" y1="248" x2="320" y2="382"/>
+    </g>
+    <!-- APK label on left face -->
+    <g transform="translate(195,176) skewY(30)">
+      <text x="62" y="68" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="42" font-weight="900" fill="#ecfeff" letter-spacing="1">APK</text>
+    </g>
+  </g>
+
+  <!-- scan beam -->
+  <rect x="96" y="294" width="448" height="14" fill="url(#beam)" filter="url(#blur)"/>
+  <rect x="96" y="299" width="448" height="4" rx="2" fill="url(#beam)"/>
+
+  <!-- alert badge -->
+  <g transform="translate(462,150)">
+    <circle r="44" fill="#ef4444" fill-opacity=".25"/>
+    <circle r="32" fill="#ef4444" stroke="#fff" stroke-width="5"/>
+    <rect x="-4.5" y="-17" width="9" height="20" rx="4.5" fill="#fff"/>
+    <circle cy="14" r="5" fill="#fff"/>
+  </g>
+
+  <text x="320" y="548" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="46" font-weight="800" letter-spacing="9" fill="#ecfeff">SCANNER</text>
+  <text x="320" y="584" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="600" letter-spacing="5" fill="#67e8f9">XAVFLI FAYLLARNI ANIQLAYDI</text>
+</svg>
