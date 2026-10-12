@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="640" height="640">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#1b2a47"/>
+    </linearGradient>
+    <linearGradient id="shield" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#0e9f8e"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="42%" r="55%">
+      <stop offset="0" stop-color="#2dd4bf" stop-opacity=".35"/>
+      <stop offset="1" stop-color="#2dd4bf" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lens" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e6fffb" stop-opacity=".95"/>
+      <stop offset="1" stop-color="#9ee7dd" stop-opacity=".85"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="640" height="640" fill="url(#bg)"/>
+  <circle cx="320" cy="285" r="250" fill="url(#glow)"/>
+
+  <!-- shield -->
+  <path d="M320 92 L476 150 V298 C476 392 408 456 320 496 C232 456 164 392 164 298 V150 Z"
+        fill="url(#shield)" stroke="#a7f3e8" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M320 118 L452 167 V298 C452 378 395 434 320 469 C245 434 188 378 188 298 V167 Z"
+        fill="none" stroke="#ffffff" stroke-opacity=".28" stroke-width="3"/>
+
+  <!-- magnifier handle -->
+  <line x1="372" y1="352" x2="430" y2="410" stroke="#0b1220" stroke-width="30" stroke-linecap="round"/>
+  <line x1="372" y1="352" x2="430" y2="410" stroke="#e6fffb" stroke-width="16" stroke-linecap="round"/>
+
+  <!-- magnifier lens -->
+  <circle cx="312" cy="290" r="84" fill="url(#lens)" stroke="#0b1220" stroke-width="18"/>
+  <circle cx="312" cy="290" r="84" fill="none" stroke="#e6fffb" stroke-width="6"/>
+
+  <!-- bug inside lens -->
+  <g fill="#e11d48" stroke="#e11d48" stroke-linecap="round" stroke-width="7">
+    <ellipse cx="312" cy="296" rx="24" ry="32" stroke="none"/>
+    <circle cx="312" cy="254" r="14" stroke="none"/>
+    <line x1="290" y1="278" x2="262" y2="262" fill="none"/>
+    <line x1="288" y1="296" x2="256" y2="296" fill="none"/>
+    <line x1="291" y1="316" x2="264" y2="334" fill="none"/>
+    <line x1="334" y1="278" x2="362" y2="262" fill="none"/>
+    <line x1="336" y1="296" x2="368" y2="296" fill="none"/>
+    <line x1="333" y1="316" x2="360" y2="334" fill="none"/>
+    <line x1="304" y1="242" x2="294" y2="224" fill="none"/>
+    <line x1="320" y1="242" x2="330" y2="224" fill="none"/>
+  </g>
+  <line x1="312" y1="268" x2="312" y2="326" stroke="#ffe4ea" stroke-opacity=".6" stroke-width="3"/>
+
+  <!-- label -->
+  <text x="320" y="568" text-anchor="middle" font-family="Helvetica, Arial, sans-serif"
+        font-size="64" font-weight="800" letter-spacing="10" fill="#e6fffb">APK</text>
+  <text x="320" y="604" text-anchor="middle" font-family="Helvetica, Arial, sans-serif"
+        font-size="22" font-weight="600" letter-spacing="6" fill="#2dd4bf">SCANNER</text>
+</svg>
