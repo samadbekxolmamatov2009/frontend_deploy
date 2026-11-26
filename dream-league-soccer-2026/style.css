@@ -1,0 +1,125 @@
+:root{
+  --a-color:#2fbf5f;
+  --b-color:#e03b3b;
+  --c-color:#2f8fe0;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#0a1420;font-family:'Segoe UI',Arial,sans-serif;}
+
+#gameRoot{position:relative;width:100vw;height:100vh;overflow:hidden;}
+#gameCanvas{position:absolute;inset:0;display:block;width:100%;height:100%;touch-action:none;}
+
+/* HUD */
+#hud{
+  position:absolute;top:0;left:0;right:0;
+  display:flex;justify-content:center;align-items:center;gap:18px;
+  padding:10px 0;pointer-events:none;
+  z-index:5;
+}
+#scoreboard{
+  background:rgba(10,20,30,0.72);border:1px solid rgba(255,255,255,0.15);
+  border-radius:10px;padding:7px 16px;color:#fff;font-weight:700;
+  display:flex;align-items:center;gap:10px;letter-spacing:0.5px;
+  font-size:15px;backdrop-filter:blur(3px);
+}
+.team-name.you{color:#6fe0a0;}
+.team-name.rival{color:#ff9a9a;}
+#timer{
+  background:rgba(10,20,30,0.72);border:1px solid rgba(255,255,255,0.15);
+  border-radius:10px;padding:7px 14px;color:#fff;font-weight:700;
+  font-variant-numeric:tabular-nums;font-size:15px;backdrop-filter:blur(3px);
+}
+
+#goalFlash{
+  position:absolute;top:38%;left:50%;transform:translate(-50%,-50%) scale(0.6);
+  font-size:min(14vw,90px);font-weight:900;color:#ffd84a;
+  text-shadow:0 0 20px rgba(255,180,0,0.9),0 4px 0 #a86a00;
+  opacity:0;pointer-events:none;z-index:6;letter-spacing:2px;
+  transition:none;
+}
+#goalFlash.show{
+  animation:goalPop 1.8s ease-out forwards;
+}
+@keyframes goalPop{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(0.4);}
+  15%{opacity:1;transform:translate(-50%,-50%) scale(1.08);}
+  25%{transform:translate(-50%,-50%) scale(1);}
+  80%{opacity:1;}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1);}
+}
+
+/* Overlays */
+.overlay{
+  position:absolute;inset:0;z-index:10;
+  background:radial-gradient(ellipse at center, rgba(10,40,20,0.92), rgba(3,10,8,0.97));
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:#fff;text-align:center;padding:24px;
+}
+.overlay.hidden{display:none;}
+#startScreen h1{
+  font-size:clamp(28px,7vw,52px);line-height:1.15;margin:0 0 10px;font-weight:900;
+  text-shadow:0 3px 0 rgba(0,0,0,0.4);
+}
+#startScreen h1 span{color:#6fe0a0;}
+#startScreen .hint{max-width:440px;color:#cfe8d8;font-size:14px;margin:4px 0 18px;}
+.legend{list-style:none;padding:0;margin:0 0 26px;display:flex;gap:18px;flex-wrap:wrap;justify-content:center;}
+.legend li{font-size:13px;color:#dfeee6;display:flex;align-items:center;gap:8px;}
+.legend b{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:50%;color:#fff;font-weight:800;font-size:14px;
+}
+.btn-a{background:var(--a-color);}
+.btn-b{background:var(--b-color);}
+.btn-c{background:var(--c-color);}
+
+#startBtn,#restartBtn{
+  background:linear-gradient(135deg,#3ddc73,#1f9c4e);
+  border:none;color:#06220f;font-weight:800;font-size:16px;
+  padding:14px 36px;border-radius:40px;cursor:pointer;
+  box-shadow:0 8px 20px rgba(0,0,0,0.35);letter-spacing:0.5px;
+}
+#endScreen h2{font-size:clamp(24px,6vw,38px);margin-bottom:8px;font-weight:900;}
+#finalScore{font-size:20px;color:#9fe8c0;margin:0 0 22px;font-weight:700;}
+
+/* Controls */
+#controls{
+  position:absolute;left:0;right:0;bottom:0;
+  display:flex;justify-content:space-between;align-items:flex-end;
+  padding:18px;z-index:5;pointer-events:none;
+}
+#joystickZone{pointer-events:auto;}
+#joystickBase{
+  width:120px;height:120px;border-radius:50%;
+  background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.3);
+  position:relative;touch-action:none;
+}
+#joystickStick{
+  width:52px;height:52px;border-radius:50%;
+  background:rgba(255,255,255,0.75);
+  position:absolute;top:34px;left:34px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.4);
+}
+
+#actionZone{pointer-events:auto;display:flex;flex-direction:column;align-items:center;gap:10px;}
+#staminaWrap{
+  width:120px;height:8px;border-radius:6px;background:rgba(255,255,255,0.18);
+  overflow:hidden;border:1px solid rgba(255,255,255,0.25);
+}
+#staminaBar{width:100%;height:100%;background:linear-gradient(90deg,#2f8fe0,#6fc6ff);transition:width .1s linear;}
+
+.buttonsRow{display:flex;gap:14px;align-items:flex-end;}
+.actionBtn{
+  width:66px;height:66px;border-radius:50%;border:none;color:#fff;
+  font-size:22px;font-weight:900;cursor:pointer;
+  box-shadow:0 6px 14px rgba(0,0,0,0.4), inset 0 -4px 8px rgba(0,0,0,0.25);
+  touch-action:none;user-select:none;
+}
+.actionBtn:active{filter:brightness(1.2);transform:translateY(2px);}
+#btnB{width:76px;height:76px;margin-bottom:6px;}
+
+@media (max-width:420px){
+  #joystickBase{width:100px;height:100px;}
+  #joystickStick{width:44px;height:44px;top:28px;left:28px;}
+  .actionBtn{width:56px;height:56px;font-size:19px;}
+  #btnB{width:66px;height:66px;}
+}
