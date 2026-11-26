@@ -1,4 +1,4 @@
-import * as THREE from "three";
+/* global THREE */
 
 /* ======================= CONSTANTS ======================= */
 const FIELD_W = 64;          // x width
